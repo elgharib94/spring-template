@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:file:./target/task_db
+    username: sa
+    password:
+
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+      ddl-auto: create
+      format-sql: true
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /rest-api-docs
+  swagger-ui:
+    path: /swagger-ui
+
+openAPI:
+  apiInfo:
+    title: "Project Rest Api"
+    description: "Rest Api for a web application"
+    version: "1.0"
+
+jwt:
+  expireAfter: 10M
