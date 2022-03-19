@@ -26,4 +26,4 @@ openAPI:
     version: "1.0"
 
 jwt:
-  expireAfter: 10M
+  expireAfter: 30M
