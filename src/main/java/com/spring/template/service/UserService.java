@@ -23,7 +23,11 @@ public class UserService {
 
     @Transactional
     public UserDTO create(RegisterUserDTO registerUserDTO) {
-        User user = User.builder().username(registerUserDTO.getUsername()).password(passwordEncoder.encode(registerUserDTO.getPassword())).authorities(registerUserDTO.getAuthorities()).build();
+        User user = User.builder()
+                .username(registerUserDTO.getUsername())
+                .password(passwordEncoder.encode(registerUserDTO.getPassword()))
+                .authorities(registerUserDTO.getAuthorities())
+                .build();
 
         return userRepository.save(user).asDTO();
     }
