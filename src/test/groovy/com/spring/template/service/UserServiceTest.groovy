@@ -1,6 +1,7 @@
 package com.spring.template.service
 
 import com.spring.template.domain.dto.RegisterUserDTO
+import com.spring.template.domain.dto.UpdatePasswordDTO
 import com.spring.template.domain.dto.UserDTO
 import com.spring.template.domain.model.Role
 import com.spring.template.domain.model.User
@@ -119,6 +120,23 @@ class UserServiceTest extends Specification {
 
         then:
         1 * userRepository.delete(user)
+    }
+
+    def "User can be update the password, If the old one equal the existent one"() {
+        given:
+        User user = new User("username", "", Set.of(Role.USER))
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("password", "newPassword");
+        and:
+        userRepository.getById(_ as UUID) >> user
+        passwordEncoder.matches(updatePasswordDTO.getOldPassword(), user.getPassword()) >> true
+        passwordEncoder.encode(updatePasswordDTO.getNewPassword()) >> "password"
+        userRepository.save(user) >> user
+
+        when:
+        userService.updatePassword(user.getId(), updatePasswordDTO)
+
+        then:
+        noExceptionThrown()
     }
 
     private Pageable createPageRequest() {

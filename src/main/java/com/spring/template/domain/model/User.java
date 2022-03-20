@@ -30,10 +30,13 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> authorities;
 
-    public void update(User user) {
-        this.username = user.username;
-        this.password = user.password;
-        this.authorities = user.authorities;
+    public void update(UserDTO userDTO) {
+        this.username = userDTO.getUsername();
+        this.authorities = userDTO.getAuthorities();
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public UserDTO asDTO() {

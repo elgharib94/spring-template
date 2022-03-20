@@ -1,6 +1,7 @@
 package com.spring.template.service;
 
 import com.spring.template.domain.dto.RegisterUserDTO;
+import com.spring.template.domain.dto.UpdatePasswordDTO;
 import com.spring.template.domain.dto.UserDTO;
 import com.spring.template.domain.model.User;
 import com.spring.template.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.bind.ValidationException;
 import java.util.UUID;
 
 @Service
@@ -35,7 +37,24 @@ public class UserService {
     @Transactional
     public UserDTO update(UUID userId, UserDTO userDTO) {
         User user = userRepository.getById(userId);
-        user.update(user);
+        user.update(userDTO);
+
+        return userRepository.save(user).asDTO();
+    }
+
+    @Transactional
+    public UserDTO updatePassword(UUID userId, UpdatePasswordDTO updatePasswordDTO) throws ValidationException {
+        User user = userRepository.getById(userId);
+
+        if (!passwordEncoder.matches(updatePasswordDTO.getOldPassword(), user.getPassword())) {
+            throw new ValidationException("Old password does not match the current one, Please ");
+        }
+
+        if (passwordEncoder.encode(updatePasswordDTO.getNewPassword()).equals(user.getPassword())) {
+            throw new ValidationException("Old Password and New Password cannot be same, Please update the new one");
+        }
+
+        user.updatePassword(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
 
         return userRepository.save(user).asDTO();
     }

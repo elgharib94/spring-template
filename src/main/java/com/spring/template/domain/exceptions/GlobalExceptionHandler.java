@@ -1,4 +1,4 @@
-package com.spring.template.configuration;
+package com.spring.template.domain.exceptions;
 
 import com.spring.template.domain.exceptions.ErrorResponse;
 import com.spring.template.domain.exceptions.NotFoundException;

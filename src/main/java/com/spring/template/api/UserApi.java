@@ -2,9 +2,9 @@ package com.spring.template.api;
 
 import com.spring.template.authorization.RequiresAdminOrManagerRole;
 import com.spring.template.authorization.RequiresAnyRole;
+import com.spring.template.domain.dto.UpdatePasswordDTO;
 import com.spring.template.domain.dto.UserDTO;
 import com.spring.template.domain.model.Role;
-import com.spring.template.domain.model.User;
 import com.spring.template.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -55,10 +55,14 @@ public class UserApi {
     }
 
     @RequiresAdminOrManagerRole
-    @PatchMapping("/{id}")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDTO userDTO) {
         userService.update(id, userDTO);
         return ResponseEntity.ok().body(userService.getUser(id));
+    }
+
+    @PatchMapping("/password/{id}")
+    public ResponseEntity<UserDTO> updatePassword(@PathVariable("id") UUID id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) throws ValidationException {
+        return ResponseEntity.ok().body(userService.updatePassword(id, updatePasswordDTO));
     }
 }
