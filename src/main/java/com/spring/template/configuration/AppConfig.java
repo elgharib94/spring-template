@@ -16,7 +16,6 @@ public class AppConfig {
     CommandLineRunner run(UserService userFacade) {
         return args -> {
             userFacade.create(new RegisterUserDTO("test_admin", "1234", Set.of(Role.ADMIN)));
-            userFacade.create(new RegisterUserDTO("test_manager", "1234", Set.of(Role.MANAGER)));
             userFacade.create(new RegisterUserDTO("test_user1", "1234", Set.of(Role.USER)));
             userFacade.create(new RegisterUserDTO("test_user2", "1234", Set.of(Role.USER)));
             userFacade.create(new RegisterUserDTO("test_user3", "1234", Set.of(Role.USER)));

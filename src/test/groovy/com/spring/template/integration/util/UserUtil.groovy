@@ -2,6 +2,7 @@ package com.spring.template.integration.util
 
 import com.spring.template.domain.dto.UserDTO
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 
@@ -15,8 +16,8 @@ class UserUtil {
     @Autowired
     private HttpUtil httpUtil;
 
-    ResponseEntity<List<UserDTO>> getUsers() {
-        return httpUtil.getRequest(USER_URL, status().isOk(), ResponseEntity<List<UserDTO>>);
+    ResponseEntity<Page<UserDTO>> getUsers() {
+        return httpUtil.get(USER_URL, status().isOk(), ResponseEntity<Page<UserDTO>>);
     }
 
 }

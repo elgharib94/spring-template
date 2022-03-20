@@ -2,7 +2,7 @@ package com.spring.template.api;
 
 
 import com.spring.template.authorization.RequiresAdminRole;
-import com.spring.template.authorization.RequiresManagerRole;
+import com.spring.template.authorization.RequiresUserRole;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,16 +20,10 @@ public class TestApi {
     @RequiresAdminRole
     @GetMapping("admin")
     public String admin(Authentication authentication) {
-
         return "I am admin";
     }
 
-    @RequiresManagerRole
-    @GetMapping("manager")
-    public String manager() {
-        return "I am manager";
-    }
-
+    @RequiresUserRole
     @GetMapping("user")
     public String user() {
         return "I am user";

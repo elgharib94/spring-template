@@ -1,6 +1,6 @@
 package com.spring.template.api;
 
-import com.spring.template.authorization.RequiresAdminOrManagerRole;
+import com.spring.template.authorization.RequiresAdminRole;
 import com.spring.template.authorization.RequiresAnyRole;
 import com.spring.template.domain.dto.UpdatePasswordDTO;
 import com.spring.template.domain.dto.UserDTO;
@@ -30,7 +30,7 @@ public class UserApi {
 
     private final UserService userService;
 
-    @RequiresAdminOrManagerRole
+    @RequiresAdminRole
     @GetMapping
     public ResponseEntity<Page<UserDTO>> getUsers(@PageableDefault(sort = "username", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok().body(userService.getUsers(pageable));
@@ -48,19 +48,20 @@ public class UserApi {
         return ResponseEntity.ok().body(userService.getByName(principal.getName()));
     }
 
-    @RequiresAdminOrManagerRole
+    @RequiresAdminRole
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") UUID id) {
         userService.delete(id);
     }
 
-    @RequiresAdminOrManagerRole
+    @PreAuthorize("#id == principal.id or hasRole('" + Role.Code.ADMIN + "')")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDTO userDTO) {
         userService.update(id, userDTO);
         return ResponseEntity.ok().body(userService.getUser(id));
     }
 
+    @PreAuthorize("#id == principal.id or hasRole('" + Role.Code.ADMIN + "')")
     @PatchMapping("/password/{id}")
     public ResponseEntity<UserDTO> updatePassword(@PathVariable("id") UUID id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) throws ValidationException {
         return ResponseEntity.ok().body(userService.updatePassword(id, updatePasswordDTO));

@@ -9,8 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@PreAuthorize("hasAnyRole('" + Role.Code.ADMIN + "','" + Role.Code.MANAGER + "')")
+@PreAuthorize("hasRole('" + Role.Code.USER + "')")
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequiresAdminOrManagerRole {
+public @interface RequiresUserRole {
 }
