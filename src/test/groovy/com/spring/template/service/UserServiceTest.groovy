@@ -11,6 +11,8 @@ import org.springframework.data.domain.*
 import org.springframework.security.crypto.password.PasswordEncoder
 import spock.lang.Specification
 
+import javax.xml.bind.ValidationException
+
 @DataJpaTest
 class UserServiceTest extends Specification {
 
@@ -122,14 +124,14 @@ class UserServiceTest extends Specification {
         1 * userRepository.delete(user)
     }
 
-    def "User can be update the password, If the old one equal the existent one"() {
+    def "User can update the password, If the old password equal the current one && old password not equal new one"() {
         given:
-        User user = new User("username", "", Set.of(Role.USER))
+        User user = new User("username", "password", Set.of(Role.USER))
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("password", "newPassword");
         and:
         userRepository.getById(_ as UUID) >> user
         passwordEncoder.matches(updatePasswordDTO.getOldPassword(), user.getPassword()) >> true
-        passwordEncoder.encode(updatePasswordDTO.getNewPassword()) >> "password"
+        passwordEncoder.encode(updatePasswordDTO.getNewPassword()) >> updatePasswordDTO.getNewPassword()
         userRepository.save(user) >> user
 
         when:
@@ -137,6 +139,40 @@ class UserServiceTest extends Specification {
 
         then:
         noExceptionThrown()
+    }
+
+    def "User can not update the password, If the old password not equal the currentPassword"() {
+        given:
+        User user = new User("username", "password", Set.of(Role.USER))
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("password", "newPassword");
+        and:
+        userRepository.getById(_ as UUID) >> user
+        passwordEncoder.matches(updatePasswordDTO.getOldPassword(), user.getPassword()) >> false
+        passwordEncoder.encode(updatePasswordDTO.getNewPassword()) >> updatePasswordDTO.getNewPassword()
+        userRepository.save(user) >> user
+
+        when:
+        userService.updatePassword(user.getId(), updatePasswordDTO)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    def "User can not update the password, If the old password equal the new password"() {
+        given:
+        User user = new User("username", "password", Set.of(Role.USER))
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("password", "password");
+        and:
+        userRepository.getById(_ as UUID) >> user
+        passwordEncoder.matches(updatePasswordDTO.getOldPassword(), user.getPassword()) >> true
+        passwordEncoder.encode(updatePasswordDTO.getNewPassword()) >> updatePasswordDTO.getNewPassword()
+        userRepository.save(user) >> user
+
+        when:
+        userService.updatePassword(user.getId(), updatePasswordDTO)
+
+        then:
+        thrown(ValidationException)
     }
 
     private Pageable createPageRequest() {

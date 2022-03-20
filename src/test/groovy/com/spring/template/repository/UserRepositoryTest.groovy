@@ -4,7 +4,6 @@ import com.spring.template.domain.dto.UserDTO
 import com.spring.template.domain.exceptions.NotFoundException
 import com.spring.template.domain.model.Role
 import com.spring.template.domain.model.User
-import com.spring.template.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import spock.lang.Specification

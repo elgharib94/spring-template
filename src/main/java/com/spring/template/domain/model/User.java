@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -31,8 +32,11 @@ public class User extends BaseEntity implements UserDetails {
     private Set<Role> authorities;
 
     public void update(UserDTO userDTO) {
-        this.username = userDTO.getUsername();
-        this.authorities = userDTO.getAuthorities();
+        if (!StringUtils.isEmpty(userDTO.getUsername()))
+            this.username = userDTO.getUsername();
+
+        if (!StringUtils.isEmpty(userDTO.getUsername()))
+            this.authorities = userDTO.getAuthorities();
     }
 
     public void updatePassword(String password) {
